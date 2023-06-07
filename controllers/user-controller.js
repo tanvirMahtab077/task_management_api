@@ -1,5 +1,6 @@
 const User = require("../model/User");
 const bcrypt = require('bcryptjs');
+const { json } = require("express");
 var jwt = require('jsonwebtoken');
 const signup = async (req, res, next) => {
   const { name, email, password } = req.body;
@@ -41,6 +42,14 @@ const login = async (req, res, next) => {
   const token = jwt.sign({id:existingUser._id}, process.env.Jwt_SECRET_Key,{
     expiresIn:'1hr'
   }) 
+
+  res.cookie(String(existingUser._id),token,{
+    path:'/',
+    expires:new Date(Date.now() + 100000 * 36),
+    httpOnly:true,
+    saemSite:'lax'
+  })
+
   return res.status(200).json({message:'Successfully Logged In',user:existingUser,token})
 };
 
@@ -57,6 +66,7 @@ const getUser = async (req,res, next)=>{
   }
   return res.status(200).json({user});
 }
+
 
 exports.signup = signup;
 exports.login = login;

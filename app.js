@@ -1,7 +1,8 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
-const router = require('./routes/user-routes')
+const cookieParser = require('cookie-parser');
+const router = require('./routes/user-routes');
 const app = express();
 
 dotenv.config();
@@ -17,5 +18,6 @@ mongoose.connect(process.env.DB_CONNECT, {
 }).catch(err=> console.log(err))
 
 // adding middleware
+app.use(cookieParser())
 app.use(express.json());
 app.use('/api',router);
